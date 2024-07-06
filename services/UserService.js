@@ -102,7 +102,20 @@ const deleteUser = async (id) => {
     };
 }
 
+const getAllUsers = async () => {
+    const users = await db.User.findAll({
+        where:{
+            status: true
+        }
+    });
+    return {
+        code: 200,
+        message: users
+    }
+}
+
 export default {
+    getAllUsers,
     createUser,
     getUserById,
     updateUser,
