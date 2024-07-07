@@ -1,5 +1,7 @@
+import { query } from 'express';
 import db from '../dist/db/models/index.js';
 import bcrypt from 'bcrypt';
+import { where } from 'sequelize';
 
 const createUser = async (req) => {
     const {
@@ -114,7 +116,40 @@ const getAllUsers = async () => {
     }
 }
 
+const findUsers = async (query) => {
+    const filter = {};
+    if (query.status !== undefined){
+        if(query.status === 'true' || query.status === '1'){
+            filter.status = true;
+        }else if(query.status === 'false' || query.status === '0' ){
+            filter.status = false  ;
+        }else{
+            return {
+                code: 400,
+                message: 'Status invalid parameter' 
+            }
+        }
+    }
+    if(query.name){
+        filter.name = {[db.Sequelize.Op.like]: `%${query.name}%`};
+    }
+    if(query.before){
+        filter.updatedAt ={[db.Sequelize.Op.lt]: new Date(query.before)};
+    }
+    if(query.after){
+        filter.updatedAt ={[db.Sequelize.Op.gt]: new Date(query.after)};
+    }
+    const users = await db.User.findAll({
+        where: filter,
+    });
+    return{
+        code: 200,
+        message: users
+    };
+};
+
 export default {
+    findUsers,
     getAllUsers,
     createUser,
     getUserById,

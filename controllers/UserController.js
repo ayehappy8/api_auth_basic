@@ -12,6 +12,11 @@ router.get('/getAllUsers', async (req, res) =>{
 }
 )
 
+router.get('/findUsers', async (req, res) =>{
+    const response = await UserService.findUsers(req.query);
+    res.status(response.code).json(response.message);
+})
+
 router.post('/create', async (req, res) => {
     const response = await UserService.createUser(req);
     res.status(response.code).json(response.message);
