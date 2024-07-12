@@ -148,7 +148,30 @@ const findUsers = async (query) => {
     };
 };
 
+const bulkCreate = async (users) => {
+    let successful = 0;
+    let failed = 0;
+    for (const user of users){
+        try {
+            const encryptedPassword = await bcrypt.hash(user.password, 10);
+            await db.User.create({
+                ...user,
+                password: encryptedPassword,
+                status: true
+            });
+            successful ++;
+        }catch (error){
+            failed ++;
+        }
+    }
+    return {
+        code: 200,
+        message:  `Successfully ${successful} users and Failed to create ${failed} users.`
+    }
+}
+
 export default {
+    bulkCreate,
     findUsers,
     getAllUsers,
     createUser,

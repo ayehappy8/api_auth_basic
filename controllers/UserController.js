@@ -9,13 +9,17 @@ const router = Router();
 router.get('/getAllUsers', async (req, res) =>{
     const response = await UserService.getAllUsers();
     res.status(response.code).json(response.message);
-}
-)
+});
 
 router.get('/findUsers', async (req, res) =>{
     const response = await UserService.findUsers(req.query);
     res.status(response.code).json(response.message);
-})
+});
+
+router.post('/bulkCreate', async (req, res) => {
+    const response = await UserService.bulkCreate(req.body.users);
+    res.status(response.code).json(response.message);
+});
 
 router.post('/create', async (req, res) => {
     const response = await UserService.createUser(req);
