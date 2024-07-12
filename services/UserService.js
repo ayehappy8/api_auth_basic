@@ -153,6 +153,16 @@ const bulkCreate = async (users) => {
     let failed = 0;
     for (const user of users){
         try {
+            const existingUser = await db.User.findOne({
+                where: {
+                    email: user.email
+                }
+            });
+            if (existingUser) {
+                failed ++;
+                continue;
+            }
+        
             const encryptedPassword = await bcrypt.hash(user.password, 10);
             await db.User.create({
                 ...user,
