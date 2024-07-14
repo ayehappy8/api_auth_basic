@@ -150,16 +150,17 @@ const findUsers = async (query) => {
                     ]
                 }
             },
-            required: false,
             order: [['expiration', 'DESC']],
             limit: 1
         }]
     });
+    const filteredUsers = users.filter(user => user.Sessions.length > 0);
     return {
         code: 200,
-        message: users
+        message: filteredUsers
     };
 };
+
 const bulkCreate = async (users) => {
     let successful = 0;
     let failed = 0;
