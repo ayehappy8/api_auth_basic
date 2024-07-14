@@ -22,6 +22,7 @@ const validateToken = async (req, res, next) => {
         });
     }
     if(new Date(session.expiration) < new Date()){
+        
         return res.status(401).json({
             message: 'Expired Token'
         });

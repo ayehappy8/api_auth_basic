@@ -1,7 +1,8 @@
-import { query } from 'express';
+import e, { query } from 'express';
 import db from '../dist/db/models/index.js';
 import bcrypt from 'bcrypt';
-import { where } from 'sequelize';
+import { Model, where } from 'sequelize';
+import { DEFAULT_EXTENSIONS } from '@babel/core';
 
 const createUser = async (req) => {
     const {
@@ -118,36 +119,46 @@ const getAllUsers = async () => {
 
 const findUsers = async (query) => {
     const filter = {};
-    if (query.status !== undefined){
-        if(query.status === 'true' || query.status === '1'){
+    const before = query.before;
+    const after = query.after;
+
+    if (query.status !== undefined) {
+        if (query.status === 'true' || query.status === '1') {
             filter.status = true;
-        }else if(query.status === 'false' || query.status === '0' ){
-            filter.status = false  ;
-        }else{
+        } else if (query.status === 'false' || query.status === '0') {
+            filter.status = false;
+        } else {
             return {
                 code: 400,
-                message: 'Status invalid parameter' 
-            }
+                message: 'Status invalid parameter'
+            };
         }
     }
-    if(query.name){
-        filter.name = {[db.Sequelize.Op.like]: `%${query.name}%`};
-    }
-    if(query.before){
-        filter.updatedAt ={[db.Sequelize.Op.lt]: new Date(query.before)};
-    }
-    if(query.after){
-        filter.updatedAt ={[db.Sequelize.Op.gt]: new Date(query.after)};
+    if (query.name) {
+        filter.name = { [db.Sequelize.Op.like]: `%${query.name}%` };
     }
     const users = await db.User.findAll({
         where: filter,
+        include: [{
+            model: db.Session,
+            attributes: ['expiration'],
+            where: {
+                expiration: {
+                    [db.Sequelize.Op.and]: [
+                        ...(before ? [{ [db.Sequelize.Op.lt]: before }] : []),
+                        ...(after ? [{ [db.Sequelize.Op.gt]: after }] : [])
+                    ]
+                }
+            },
+            required: false
+        }]
     });
-    return{
+
+    return {
         code: 200,
         message: users
     };
 };
-
 const bulkCreate = async (users) => {
     let successful = 0;
     let failed = 0;
@@ -165,7 +176,7 @@ const bulkCreate = async (users) => {
         
             const encryptedPassword = await bcrypt.hash(user.password, 10);
             await db.User.create({
-                ...user,
+                ...user,    
                 password: encryptedPassword,
                 status: true
             });
