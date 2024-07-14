@@ -150,10 +150,11 @@ const findUsers = async (query) => {
                     ]
                 }
             },
-            required: false
+            required: false,
+            order: [['expiration', 'DESC']],
+            limit: 1
         }]
     });
-
     return {
         code: 200,
         message: users
