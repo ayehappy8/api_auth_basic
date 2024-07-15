@@ -32,6 +32,7 @@ Iniciar el servicio
 
 ```http
   GET http://localhost:3001/api/v1/users/findUsers
+
 ```
 | Parameter | Type     | Description                |Ejemplo            |
 | :-------- | :------- | :------------------------- |:------------------------- |
@@ -40,8 +41,7 @@ Iniciar el servicio
 | `after` | `string` | Hayan iniciado sesión después de una fecha especificada|2024-07-3         |
 | `before` | `string` | Hayan iniciado sesión antes de una fecha especificada |2024-07-1         |
 
-
-### bulkCreate
+### postbulkCreate
 
 ```http
    POST http://localhost:3001/api/v1/users/bulkCreate
@@ -51,17 +51,18 @@ Iniciar el servicio
 {
   "users": [
     {
-      "name": "Paco Mormon",
-      "email": "axel.mo.com",
+      "name": "Tomas Roncero",
+      "email": "tomas.roncer.com",
       "password": "contra123456",
       "cellphone": "+56123343454"
     },
     {
-      "name": "Pera Damian",
-      "email": "PERA.da@gmail.com",
+      "name": "Tony Morata",
+      "email": "Tony.Morata@gmail.com",
       "password": "contra123456",
       "cellphone": "+56143433354"
     }
   ]
 }
+
 ```
