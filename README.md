@@ -28,7 +28,7 @@ Iniciar el servicio
 ```http
   GET http://localhost:3001/api/v1/users/getAllUsers
 ```
-### getAllUsers
+### getfindUsers
 
 ```http
   GET http://localhost:3001/api/v1/users/findUsers
